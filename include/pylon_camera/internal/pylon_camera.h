@@ -41,6 +41,10 @@
 #include <pylon_camera/pylon_camera_parameter.h>
 #include <pylon_camera/pylon_camera.h>
 
+#include <GenApi/INodeMap.h>
+#include <GenApi/Pointer.h>
+#include <pylon/stdinclude.h>
+
 namespace pylon_camera
 {
 
@@ -158,11 +162,20 @@ protected:
     virtual bool setupSequencer(const std::vector<float>& exposure_times,
                                 std::vector<float>& exposure_times_set);
 
+    // Pixel Format Encoding enumeration
+    enum PixelEncodingEnum {no_pixelEncoding, RGB8, BGR8, YCbCr, MONO8};
+
+    // Pixel Size enumeration
+    enum PixelSizeEnum {no_pixelSize, bpp8, bpp10, bpp12, bpp16, bpp24};
+
     CBaslerInstantCameraT* cam_;
 
-    PixelFormatEnums image_encoding_;
+    PixelEncodingEnum image_encoding_;
 
-    PixelSizeEnums image_pixel_depth_;
+    PixelSizeEnum image_pixel_depth_;
+
+    GENAPI_NAMESPACE::CEnumerationPtr pixelEncoding_;
+    GENAPI_NAMESPACE::CEnumerationPtr pixelSize_;
 };
 
 }  // namespace pylon_camera

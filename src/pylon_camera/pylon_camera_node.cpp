@@ -167,7 +167,6 @@ bool PylonCameraNode::startGrabbing()
         ROS_ERROR("Error while start grabbing");
         return false;
     }
-
     set_user_output_srvs_.resize(pylon_camera_->numUserOutputs());
     for ( int i = 0; i < set_user_output_srvs_.size(); ++i )
     {
@@ -191,7 +190,14 @@ bool PylonCameraNode::startGrabbing()
 
     // step = full row length in bytes
     // img_raw_msg_.data // actual matrix data, size is (step * rows)
-    img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+    // Need to multiply by 3 if image is colored
+    if (img_raw_msg_.encoding == sensor_msgs::image_encodings::MONO8)
+      img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+    else
+      // KTODO: Replace 3 with name
+      img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth() * 3;
+
+    img_raw_msg_.data.resize(img_raw_msg_.step*img_raw_msg_.height);
 
     if ( !camera_info_manager_->setCameraName(pylon_camera_->deviceUserID()) )
     {
@@ -199,7 +205,6 @@ bool PylonCameraNode::startGrabbing()
         ROS_WARN_STREAM("[" << pylon_camera_->deviceUserID()
                 << "] name not valid for camera_info_manger");
     }
-
     grab_imgs_raw_as_.start();
 
     // Initial setting of the CameraInfo-msg, assuming no calibration given

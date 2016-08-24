@@ -37,6 +37,8 @@
 #include <pylon_camera/internal/pylon_camera.h>
 #include <sensor_msgs/image_encodings.h>
 
+
+
 namespace pylon_camera
 {
 
@@ -264,12 +266,36 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
             setShutterMode(parameters.shutter_mode_);
         }
 
-        if ( image_encoding_ != PixelFormatEnums::PixelFormat_Mono8 )
-        {
-            cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_Mono8);
-            image_encoding_ = cam_->PixelFormat.GetValue();
-            ROS_WARN_STREAM("Image encoding differing from 8-Bit Mono not yet "
-                << "implemented! Will switch to 8-Bit Mono");
+        // Get current image encoding
+        GENAPI_NAMESPACE::INodeMap& nodemap = cam_->GetNodeMap();
+        pixelEncoding_ = nodemap.GetNode("PixelFormat");
+        Pylon::String_t oldPixcelFormat = pixelEncoding_->ToString();
+        ROS_INFO_STREAM("Current image encoding is " << oldPixcelFormat);
+
+        // Get current pixel size
+        pixelSize_ = nodemap.GetNode("PixelSize");
+        Pylon::String_t oldPixelSize = pixelSize_->ToString();
+//        ROS_INFO_STREAM("Current pixel size is " << oldPixelSize);
+
+        //KTODO: Get name as parameter, pass to function. Add catch
+        if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("RGB8"))) {
+          pixelEncoding_->FromString("RGB8");
+          image_encoding_ = PixelEncodingEnum::RGB8;
+          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+        } else if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("BGR8"))) {
+          pixelEncoding_->FromString("BGR8");
+          image_encoding_ = PixelEncodingEnum::BGR8;
+          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+        } else if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("YCbCr422_8"))) {
+          pixelEncoding_->FromString("YCbCr422_8");
+          image_encoding_ = PixelEncodingEnum::YCbCr;
+          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+        } else if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("Mono8"))) {
+          pixelEncoding_->FromString("Mono8");
+          image_encoding_ = PixelEncodingEnum::MONO8;
+          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+        } else {
+          image_encoding_ = PixelEncodingEnum::no_pixelEncoding;
         }
 
         cam_->StartGrabbing();
@@ -277,9 +303,13 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
         device_user_id_ = cam_->DeviceUserID.GetValue();
         img_rows_ = static_cast<size_t>(cam_->Height.GetValue());
         img_cols_ = static_cast<size_t>(cam_->Width.GetValue());
-        image_encoding_ = cam_->PixelFormat.GetValue();
-        image_pixel_depth_ = cam_->PixelSize.GetValue();
-        img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth();
+
+        // Change size based on color or mono
+        if (image_encoding_ == PixelEncodingEnum::MONO8)
+          img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth();
+        else
+          //KTODO: Replace 3
+          img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth() * 3;
 
         grab_timeout_ = exposureTime().GetMax() * 1.05;
 
@@ -331,7 +361,6 @@ bool PylonCameraImpl<CameraTrait>::grab(uint8_t* image)
         ROS_ERROR("Error: Grab was not successful");
         return false;
     }
-
     memcpy(image, ptr_grab_result->GetBuffer(), img_size_byte_);
 
     return true;
@@ -342,6 +371,7 @@ bool PylonCameraImpl<CameraTrait>::grab(Pylon::CGrabResultPtr& grab_result)
 {
     try
     {
+        //KTODO: Replace value to defined value
         int timeout = 5000;  // ms
 
         // WaitForFrameTriggerReady to prevent trigger signal to get lost
@@ -384,7 +414,6 @@ bool PylonCameraImpl<CameraTrait>::grab(Pylon::CGrabResultPtr& grab_result)
                 << grab_result->GetErrorDescription());
         return false;
     }
-
     return true;
 }
 
@@ -809,25 +838,41 @@ bool PylonCameraImpl<CameraTraitT>::setShutterMode(const SHUTTER_MODE &shutter_m
 template <typename CameraTraitT>
 std::string PylonCameraImpl<CameraTraitT>::imageEncoding() const
 {
-    switch ( image_encoding_ )
-    {
-        case PixelFormatEnums::PixelFormat_Mono8:
-            return sensor_msgs::image_encodings::MONO8;
-        default:
-            throw std::runtime_error("Currently, only mono8 cameras are supported");
-    }
+  switch ( image_encoding_ )
+  {
+    case PixelEncodingEnum::RGB8:
+      return sensor_msgs::image_encodings::RGB8;
+
+      //KTODO: Add support
+//    case PixelEncodingEnum::BGR8:
+//      return sensor_msgs::image_encodings::BGR8;
+
+    // KTODO: Check if sensor_msgs support YCbCr
+
+    case PixelEncodingEnum::MONO8:
+      return sensor_msgs::image_encodings::MONO8;
+
+    default:
+      throw std::runtime_error("Unsupported image encoding. Convert to one of RGB8, BGR8, MONO8.");
+  }
 }
 
 template <typename CameraTraitT>
 int PylonCameraImpl<CameraTraitT>::imagePixelDepth() const
 {
-    switch ( image_pixel_depth_ )
-    {
-        case PixelSizeEnums::PixelSize_Bpp8:
-            return sizeof(uint8_t);
-        default:
-            throw std::runtime_error("Currently, only 8bit images are supported");
-    }
+  //KTODO: Consider implementing check
+  // Currently supports bpp8 (Mono8) or bpp24 (RGB8)
+  return sizeof(uint8_t);
+//  switch ( image_pixel_depth_ )
+//  {
+//    case PixelSizeEnum::bpp16:
+//    case PixelSizeEnum::bpp8:
+//    case PixelSizeEnum::bpp24:
+//      return sizeof(uint8_t);
+//
+//    default:
+//      throw std::runtime_error("Unsupported pixel size.");
+//  }
 }
 
 template <typename CameraTraitT>
