@@ -45,6 +45,9 @@
 #include <GenApi/Pointer.h>
 #include <pylon/stdinclude.h>
 
+#define COLOR_CHANNEL 3
+#define MONO_CHANNEL  1
+
 namespace pylon_camera
 {
 
@@ -141,6 +144,10 @@ public:
 
     virtual int imagePixelDepth() const;
 
+    virtual int imageSizeByte() const;
+
+    virtual int imageStepSize() const;
+
     virtual std::string typeName() const;
 
     virtual float exposureStep();
@@ -182,8 +189,8 @@ protected:
 
     PixelSizeEnum image_pixel_depth_;
 
-    GENAPI_NAMESPACE::CEnumerationPtr pixelEncoding_;
-    GENAPI_NAMESPACE::CEnumerationPtr pixelSize_;
+    GenApi::CEnumerationPtr pixelEncoding_;
+    GenApi::CEnumerationPtr pixelSize_;
 };
 
 }  // namespace pylon_camera

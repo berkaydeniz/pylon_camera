@@ -190,12 +190,8 @@ bool PylonCameraNode::startGrabbing()
 
     // step = full row length in bytes
     // img_raw_msg_.data // actual matrix data, size is (step * rows)
-    // Need to multiply by 3 if image is colored
-    if (img_raw_msg_.encoding == sensor_msgs::image_encodings::MONO8)
-      img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
-    else
-      // KTODO: Replace 3 with name
-      img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth() * 3;
+    img_raw_msg_.step = pylon_camera_->imageStepSize();
+
 
     img_raw_msg_.data.resize(img_raw_msg_.step*img_raw_msg_.height);
 
@@ -962,7 +958,7 @@ bool PylonCameraNode::setBinningX(const size_t& target_binning_x,
                 img_raw_msg_.width = pylon_camera_->imageCols();
                 // step = full row length in bytes
                 // img_raw_msg_.data // actual matrix data, size is (step * rows)
-                img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+                img_raw_msg_.step = pylon_camera_->imageStepSize();
                 return false;
             }
             r.sleep();
@@ -974,7 +970,7 @@ bool PylonCameraNode::setBinningX(const size_t& target_binning_x,
     img_raw_msg_.width = pylon_camera_->imageCols();
     // step = full row length in bytes
     // img_raw_msg_.data // actual matrix data, size is (step * rows)
-    img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+    img_raw_msg_.step = pylon_camera_->imageStepSize();
     return true;
 }
 
@@ -1004,7 +1000,7 @@ bool PylonCameraNode::setBinningY(const size_t& target_binning_y,
                 img_raw_msg_.height = pylon_camera_->imageRows();
                 // step = full row length in bytes
                 // img_raw_msg_.data // actual matrix data, size is (step * rows)
-                img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+                img_raw_msg_.step = pylon_camera_->imageStepSize();
                 return false;
             }
             r.sleep();
@@ -1016,7 +1012,7 @@ bool PylonCameraNode::setBinningY(const size_t& target_binning_y,
     img_raw_msg_.height = pylon_camera_->imageRows();
     // step = full row length in bytes
     // img_raw_msg_.data // actual matrix data, size is (step * rows)
-    img_raw_msg_.step = img_raw_msg_.width * pylon_camera_->imagePixelDepth();
+    img_raw_msg_.step = pylon_camera_->imageStepSize();
     return true;
 }
 

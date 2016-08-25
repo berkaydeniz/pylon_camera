@@ -267,7 +267,7 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
         }
 
         // Get current image encoding
-        GENAPI_NAMESPACE::INodeMap& nodemap = cam_->GetNodeMap();
+        GenApi::INodeMap& nodemap = cam_->GetNodeMap();
         pixelEncoding_ = nodemap.GetNode("PixelFormat");
         Pylon::String_t oldPixcelFormat = pixelEncoding_->ToString();
         ROS_INFO_STREAM("Current image encoding is " << oldPixcelFormat);
@@ -278,40 +278,30 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
 //        ROS_INFO_STREAM("Current pixel size is " << oldPixelSize);
 
         // Convert image pixel encoding
+        GenICam_3_0_Basler_pylon_v5_0::gcstring encoding = "";
         switch (parameters.pixel_encoding_ )
         {
           case PixelEncodingEnum::MONO8:
-            if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("Mono8"))) {
-              pixelEncoding_->FromString("Mono8");
-              image_encoding_ = PixelEncodingEnum::MONO8;
-              ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-            } else {
-              ROS_ERROR("Unable to convert the image pixel encoding.");
-            }
+            encoding = "Mono8";
             break;
 
           case PixelEncodingEnum::BGR8:
-            if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("BGR8"))) {
-              pixelEncoding_->FromString("BGR8");
-              image_encoding_ = PixelEncodingEnum::BGR8;
-              ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-            } else {
-              ROS_ERROR("Unable to convert the image pixel encoding.");
-            }
+            encoding = "BGR8";
             break;
 
           case PixelEncodingEnum::RGB8:
-            if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("RGB8"))) {
-              pixelEncoding_->FromString("RGB8");
-              image_encoding_ = PixelEncodingEnum::RGB8;
-              ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-            } else {
-              ROS_ERROR("Unable to convert the image pixel encoding.");
-            }
+            encoding = "RGB8";
             break;
 
-          default:
-            ROS_ERROR("Unable to convert the image pixel encoding.");
+          default: break;
+        }
+
+        if (GenApi::IsAvailable(pixelEncoding_->GetEntryByName(encoding))) {
+          pixelEncoding_->FromString(encoding);
+          image_encoding_ = (PixelEncodingEnum)parameters.pixel_encoding_;
+          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+        } else {
+          ROS_ERROR("Unable to convert the image pixel encoding.");
         }
 
         cam_->StartGrabbing();
@@ -320,12 +310,7 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
         img_rows_ = static_cast<size_t>(cam_->Height.GetValue());
         img_cols_ = static_cast<size_t>(cam_->Width.GetValue());
 
-        // Change size based on color or mono
-        if (image_encoding_ == PixelEncodingEnum::MONO8)
-          img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth();
-        else
-          //KTODO: Replace 3
-          img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth() * 3;
+        img_size_byte_ = imageSizeByte();
 
         grab_timeout_ = exposureTime().GetMax() * 1.05;
 
@@ -460,8 +445,7 @@ bool PylonCameraImpl<CameraTraitT>::setBinningX(const size_t& target_binning_x,
             cam_->BinningHorizontal.SetValue(binning_x_to_set);
             reached_binning_x = currentBinningX();
             cam_->StartGrabbing();
-            img_cols_ = static_cast<size_t>(cam_->Width.GetValue());
-            img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth();
+            img_size_byte_ =  imageSizeByte();
         }
         else
         {
@@ -507,8 +491,7 @@ bool PylonCameraImpl<CameraTraitT>::setBinningY(const size_t& target_binning_y,
             cam_->BinningVertical.SetValue(binning_y_to_set);
             reached_binning_y = currentBinningY();
             cam_->StartGrabbing();
-            img_rows_ = static_cast<size_t>(cam_->Height.GetValue());
-            img_size_byte_ =  img_cols_ * img_rows_ * imagePixelDepth();
+            img_size_byte_ =  imageSizeByte();
         }
         else
         {
@@ -889,6 +872,21 @@ int PylonCameraImpl<CameraTraitT>::imagePixelDepth() const
 //    default:
 //      throw std::runtime_error("Unsupported pixel size.");
 //  }
+}
+
+template <typename CameraTraitT>
+int PylonCameraImpl<CameraTraitT>::imageSizeByte() const
+{
+  return ( imageStepSize() * imageRows() );
+}
+
+template <typename CameraTraitT>
+int PylonCameraImpl<CameraTraitT>::imageStepSize() const
+{
+  if ( imageEncoding() == sensor_msgs::image_encodings::MONO8 )
+      return (imageCols() * imagePixelDepth() * MONO_CHANNEL);
+    else
+      return (imageCols() * imagePixelDepth() * COLOR_CHANNEL);
 }
 
 template <typename CameraTraitT>

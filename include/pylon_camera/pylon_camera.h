@@ -282,6 +282,18 @@ public:
     virtual int imagePixelDepth() const = 0;
 
     /**
+     * Get the size of image in byte
+     * @return size of image in byte
+     */
+    virtual int imageSizeByte() const = 0;
+
+    /**
+     * Get the size of image step
+     * @return size of image step
+     */
+    virtual int imageStepSize() const = 0;
+
+    /**
      * Get the camera type. Currently supported cameras are USB, DART and GigE
      * @return camera type as string
      */
