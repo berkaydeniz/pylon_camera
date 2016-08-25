@@ -238,6 +238,14 @@ public:
      */
     bool has_intrinsic_calib_;
 
+    /**
+     * The image pixel encoding which camera supports and published.
+     * 0:  MONO8
+     * 1:  BGR8
+     * 2:  RGB8
+     */
+    int pixel_encoding_;
+
 protected:
     /**
      * Validates the parameter set found on the ros parameter server.

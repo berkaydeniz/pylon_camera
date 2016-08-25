@@ -277,25 +277,41 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
         Pylon::String_t oldPixelSize = pixelSize_->ToString();
 //        ROS_INFO_STREAM("Current pixel size is " << oldPixelSize);
 
-        //KTODO: Get name as parameter, pass to function. Add catch
-        if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("RGB8"))) {
-          pixelEncoding_->FromString("RGB8");
-          image_encoding_ = PixelEncodingEnum::RGB8;
-          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-        } else if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("BGR8"))) {
-          pixelEncoding_->FromString("BGR8");
-          image_encoding_ = PixelEncodingEnum::BGR8;
-          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-        } else if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("YCbCr422_8"))) {
-          pixelEncoding_->FromString("YCbCr422_8");
-          image_encoding_ = PixelEncodingEnum::YCbCr;
-          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-        } else if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("Mono8"))) {
-          pixelEncoding_->FromString("Mono8");
-          image_encoding_ = PixelEncodingEnum::MONO8;
-          ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
-        } else {
-          image_encoding_ = PixelEncodingEnum::no_pixelEncoding;
+        // Convert image pixel encoding
+        switch (parameters.pixel_encoding_ )
+        {
+          case PixelEncodingEnum::MONO8:
+            if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("Mono8"))) {
+              pixelEncoding_->FromString("Mono8");
+              image_encoding_ = PixelEncodingEnum::MONO8;
+              ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+            } else {
+              ROS_ERROR("Unable to convert the image pixel encoding.");
+            }
+            break;
+
+          case PixelEncodingEnum::BGR8:
+            if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("BGR8"))) {
+              pixelEncoding_->FromString("BGR8");
+              image_encoding_ = PixelEncodingEnum::BGR8;
+              ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+            } else {
+              ROS_ERROR("Unable to convert the image pixel encoding.");
+            }
+            break;
+
+          case PixelEncodingEnum::RGB8:
+            if (GENAPI_NAMESPACE::IsAvailable(pixelEncoding_->GetEntryByName("RGB8"))) {
+              pixelEncoding_->FromString("RGB8");
+              image_encoding_ = PixelEncodingEnum::RGB8;
+              ROS_INFO_STREAM("New image encoding is " << pixelEncoding_->ToString());
+            } else {
+              ROS_ERROR("Unable to convert the image pixel encoding.");
+            }
+            break;
+
+          default:
+            ROS_ERROR("Unable to convert the image pixel encoding.");
         }
 
         cam_->StartGrabbing();

@@ -48,6 +48,20 @@
 namespace pylon_camera
 {
 
+// Pixel Format Encoding enumeration
+enum PixelEncodingEnum {MONO8,
+                        BGR8,
+                        RGB8,
+                        no_pixelEncoding,
+                        };
+
+// Pixel Size enumeration
+enum PixelSizeEnum {no_pixelSize,
+                    bpp8,
+                    bpp16,
+                    bpp24
+                    };
+
 template <typename CameraTraitT>
 class PylonCameraImpl : public PylonCamera
 {
@@ -161,12 +175,6 @@ protected:
 
     virtual bool setupSequencer(const std::vector<float>& exposure_times,
                                 std::vector<float>& exposure_times_set);
-
-    // Pixel Format Encoding enumeration
-    enum PixelEncodingEnum {no_pixelEncoding, RGB8, BGR8, YCbCr, MONO8};
-
-    // Pixel Size enumeration
-    enum PixelSizeEnum {no_pixelSize, bpp8, bpp10, bpp12, bpp16, bpp24};
 
     CBaslerInstantCameraT* cam_;
 
