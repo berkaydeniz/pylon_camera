@@ -83,6 +83,8 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
     }
 
     nh.param("pixel_encoding", pixel_encoding_, 2);
+    if (pixel_encoding_ < 0 || pixel_encoding_ > 2)
+      pixel_encoding_ = 2;
 
     binning_x_given_ = nh.hasParam("binning_x");
     if ( binning_x_given_ )
