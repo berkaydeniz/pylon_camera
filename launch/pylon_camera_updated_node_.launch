@@ -9,11 +9,11 @@
     <arg name="binning_y"             default="1" />
     <arg name="frame_rate"            default="20.0" />
     <arg name="pixel_encoding"        default="2" /> <!-- 0:MONO8, 1:BGR8, 2:RGB8 -->
-    <arg name="exposure"              default="3000.0" />
-    <arg name="gain"                  default="0.5" />
+    <arg name="exposure"              default="15000.0" />
+    <arg name="gain"                  default="0.0" />
     <arg name="gamma"                 default="1.0" />
-    <arg name="brightness"            default="100" />
-    <arg name="brightness_continuous" default="true" />
+    <arg name="brightness"            default="0.0" />
+    <arg name="brightness_continuous" default="false" />
     <arg name="exposure_auto"         default="false" />
     <arg name="gain_auto"             default="false" />
     <!-- Following two settings are only for GigE cameras -->

@@ -426,7 +426,7 @@ bool PylonCameraNode::grabImage()
 
     img_raw_msg_.header.stamp = ros::Time::now();
 
-    if ( camera_info_manager_->isCalibrated() )
+    if ( camera_info_manager_->isCalibrated() && getNumSubscribersRect() > 0)
     {
       // Make sure that cv_bridge_img_rect is not null
       if (cv_bridge_img_rect_ == nullptr) {
