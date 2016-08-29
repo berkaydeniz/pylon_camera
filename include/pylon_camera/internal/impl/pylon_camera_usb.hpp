@@ -87,11 +87,40 @@ bool PylonUSBCamera::applyCamSpecificStartupSettings(const PylonCameraParameter&
 
         // Additional settings for USB camera color image (based on basler driver settings)
         if (parameters.pixel_encoding_ != 0) {
-          cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Off);
-          cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Off);
-          cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Blue);
-          cam_->BalanceRatio.SetValue(2.56);
-          cam_->OverlapMode.SetIntValue(Basler_UsbCameraParams::OverlapMode_Off);
+
+          if (parameters.light_source_preset_ == 0) {
+              cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Off);
+          } else if (parameters.light_source_preset_ == 1) {
+              cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Daylight5000K);
+          } else if (parameters.light_source_preset_ == 2) {
+              cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Daylight6500K);
+          } else {
+              cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Tungsten2800K);
+          }
+
+          if (parameters.balance_white_auto_ == 0) {
+            cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Off);
+          } else if (parameters.balance_white_auto_ == 1) {
+            cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Once);
+          } else {
+            cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Continuous);
+          }
+
+          if (parameters.balance_ratio_selector_ == 0) {
+            cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Red);
+          } else if (parameters.balance_ratio_selector_ == 1) {
+            cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Blue);
+          } else {
+            cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Green);
+          }
+
+          cam_->BalanceRatio.SetValue(parameters.balance_ratio_);
+
+          if (parameters.overlap_mode_on_) {
+            cam_->OverlapMode.SetIntValue(Basler_UsbCameraParams::OverlapMode_On);
+          } else {
+            cam_->OverlapMode.SetIntValue(Basler_UsbCameraParams::OverlapMode_Off);
+          }
         }
 
         // The gain auto function and the exposure auto function can be used at the same time. In this case,

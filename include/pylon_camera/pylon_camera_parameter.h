@@ -241,10 +241,44 @@ public:
     /**
      * The image pixel encoding which camera supports and published.
      * 0:  MONO8
-     * 1:  BGR8
-     * 2:  RGB8
+     * 1:  RGB8
      */
     int pixel_encoding_;
+
+    /*
+     * Type of light source preset selection.
+     * 0: Off
+     * 1: Daylight5000K
+     * 2: Daylight6500K
+     * 3: Tungsten2800K
+     */
+    int light_source_preset_;
+
+    /*
+     * Balance white auto selection
+     * 0: Off
+     * 1: Once
+     * 2: Continuous
+     */
+    int balance_white_auto_;
+
+    /*
+     * Balance ratio selector.
+     * 0: Red
+     * 1: Blue
+     * 2: Green
+     */
+    int balance_ratio_selector_;
+
+    /*
+     * Balance ratio selector
+     */
+    double balance_ratio_;
+
+    /*
+     * Overlap Mode On selection
+     */
+    bool overlap_mode_on_;
 
 protected:
     /**

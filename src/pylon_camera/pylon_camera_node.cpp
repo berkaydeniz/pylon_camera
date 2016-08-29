@@ -426,13 +426,15 @@ bool PylonCameraNode::grabImage()
 
     img_raw_msg_.header.stamp = ros::Time::now();
 
-    if ( camera_info_manager_->isCalibrated() && getNumSubscribersRect() > 0)
+    if ( camera_info_manager_->isCalibrated())
     {
       // Make sure that cv_bridge_img_rect is not null
       if (cv_bridge_img_rect_ == nullptr) {
         ROS_INFO("Initialized Rectification topics");
         setupRectification();
       }
+
+      if (getNumSubscribersRect() > 0) {
 
         cv_bridge_img_rect_->header.stamp = img_raw_msg_.header.stamp;
         assert(pinhole_model_->initialized());
@@ -447,6 +449,7 @@ bool PylonCameraNode::grabImage()
 
         pinhole_model_->fromCameraInfo(camera_info_manager_->getCameraInfo());
         pinhole_model_->rectifyImage(img_raw, cv_bridge_img_rect_->image);
+      }
     }
     return true;
 }

@@ -37,8 +37,6 @@
 #include <pylon_camera/internal/pylon_camera.h>
 #include <sensor_msgs/image_encodings.h>
 
-
-
 namespace pylon_camera
 {
 
@@ -368,7 +366,6 @@ bool PylonCameraImpl<CameraTrait>::grab(Pylon::CGrabResultPtr& grab_result)
 {
     try
     {
-        //KTODO: Replace value to defined value
         int timeout = 5000;  // ms
 
         // WaitForFrameTriggerReady to prevent trigger signal to get lost

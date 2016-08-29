@@ -1,16 +1,6 @@
-#  The tf frame under which the images were published
-camera_frame: pylon_camera
-
 #  The DeviceUserID of the camera. If empty, the first camera found in the
 #  device list will be used
 device_user_id: ""
-
-#  The CameraInfo URL (Uniform Resource Locator) where the optional intrinsic
-#  camera calibration parameters are stored. This URL string will be parsed
-#  from the ROS-CameraInfoManager:
-#  http://docs.ros.org/api/camera_info_manager/html/classcamera__info__manager_
-#  1_1CameraInfoManager.html#details
-camera_info_url: ""
 
 #  Binning factor to get downsampled images. It refers here to any camera
 #  setting which combines rectangular neighborhoods of pixels into larger
@@ -21,11 +11,6 @@ camera_info_url: ""
 #binning_x: 1
 #binning_y: 1
 
-#  The desired publisher frame rate if listening to the topics.
-#  This paramter can only be set once at startup
-#  Calling the GrabImages-Action can result in a higher framerate
-frame_rate: 5.0
-
 ##########################################################################
 ######################## Image Intensity Settings ########################
 ##########################################################################
@@ -35,18 +20,18 @@ frame_rate: 5.0
 ##########################################################################
 
 #  The exposure time in microseconds to be set after opening the camera.
-# exposure: 10000.0
+exposure: 15000.0
 
 #  The target gain in percent of the maximal value the camera supports
 #  For USB-Cameras, the gain is in dB, for GigE-Cameras it is given in so
 #  called 'device specific units'.
-# gain: 0.5
+gain: 0.0
 
 #  Gamma correction of pixel intensity.
 #  Adjusts the brightness of the pixel values output by the camera's sensor
 #  to account for a non-linearity in the human perception of brightness or
 #  of the display system (such as CRT).
-# gamma: 1.0
+gamma: 1.0
 
 #  The average intensity value of the images. It depends the exposure time
 #  as well as the gain setting. If 'exposure' is provided, the interface will
@@ -56,7 +41,7 @@ frame_rate: 5.0
 #  try to reach the desired brightness by only varying the exposure time. If
 #  gain AND exposure are given, it is not possible to reach the brightness,
 #  because both are assumed to be fix.
-# brightness: 100
+brightness: 0
 
 #  Only relevant, if 'brightness' is set:
 #  The brightness_continuous flag controls the auto brightness function.
@@ -66,7 +51,7 @@ frame_rate: 5.0
 #  trying to adapt to changing light conditions. This is only possible for
 #  values in the possible auto range of the pylon API which is e.g. [50 - 205]
 #  for acA2500-14um and acA1920-40gm
-# brightness_continuous: true
+brightness_continuous: false
 
 #  Only relevant, if 'brightness' is set:
 #  If the camera should try to reach and / or keep the brightness, hence
@@ -78,8 +63,8 @@ frame_rate: 5.0
 #  reached by adapting the exposure time.
 #  The gain_auto flag indicates, that the desired brightness will be
 #  reached by adapting the gain.
-# exposure_auto: true
-# gain_auto: true
+exposure_auto: false
+gain_auto: false
 
 ##########################################################################
 
@@ -96,3 +81,46 @@ frame_rate: 5.0
 #  For cameras used on a RaspberryPI this value should be set to 11772.
 # gige:
 #  inter_pkg_delay: 1000
+
+#############################################################################
+
+# Following settigs are only applied to USB camera during RGB8 encoding to
+# improve the quality of image.
+
+# Type of light source preset. Only used for USB camera during RGB8.
+# Available options are
+# 0: Off
+# 1: Daylight5000K
+# 2: Daylight6500K
+# 3: Tungsten2800K
+usb:
+ LightSourcePreset: 0
+
+# Balance White Auto. Only used for USB camera during RBG8.
+# Available options are 
+# 0: Off
+# 1: Once
+# 2: Continuous
+# If "Once" is selected, white balance is adjusted automatically until it reaches 
+# a specific target value. If "Continuous" is selected, white balance is adjusted 
+# repeatedly while images are acquired.
+usb:
+ BalanceWhiteAuto: 0
+
+# Balance ratio selector. Only used for USB camera during RGB8.
+# It specified which channel the balance ratio will be applied to.
+# Available options are 
+# 0: Red
+# 1: Blue
+# 2: Green
+usb:
+ BalanceRatioSelector: 1
+
+# Balance Ratio. Only used for USB camera during RGB8.
+usb:
+ BalanceRatio: 2.56
+
+# Overlap Mode On. Only used for USB camera during RGB8. 
+# If it is true, Overlaps exposure and image readout
+usb:
+ OverlapModeOn: false
