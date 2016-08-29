@@ -85,6 +85,15 @@ bool PylonUSBCamera::applyCamSpecificStartupSettings(const PylonCameraParameter&
         cam_->AutoGainLowerLimit.SetValue(cam_->Gain.GetMin());
         cam_->AutoGainUpperLimit.SetValue(cam_->Gain.GetMax());
 
+        // Additional settings for USB camera color image (based on basler driver settings)
+        if (parameters.pixel_encoding_ != 0) {
+          cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Off);
+          cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Off);
+          cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Blue);
+          cam_->BalanceRatio.SetValue(2.56);
+          cam_->OverlapMode.SetIntValue(Basler_UsbCameraParams::OverlapMode_Off);
+        }
+
         // The gain auto function and the exposure auto function can be used at the same time. In this case,
         // however, you must also set the Auto Function Profile feature.
         //  cam_->AutoFunctionProfile.SetValue(Basler_UsbCameraParams::AutoFunctionProfile_MinimizeGain);

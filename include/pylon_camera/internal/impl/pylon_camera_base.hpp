@@ -842,17 +842,14 @@ std::string PylonCameraImpl<CameraTraitT>::imageEncoding() const
     case PixelEncodingEnum::RGB8:
       return sensor_msgs::image_encodings::RGB8;
 
-      //KTODO: Add support
-//    case PixelEncodingEnum::BGR8:
-//      return sensor_msgs::image_encodings::BGR8;
-
-    // KTODO: Check if sensor_msgs support YCbCr
+    case PixelEncodingEnum::BGR8:
+      return sensor_msgs::image_encodings::BGR8;
 
     case PixelEncodingEnum::MONO8:
       return sensor_msgs::image_encodings::MONO8;
 
     default:
-      throw std::runtime_error("Unsupported image encoding. Convert to one of RGB8, BGR8, MONO8.");
+      throw std::runtime_error("Unsupported image encoding. Convert to one of RGB8, BGR8, MONO8 that camera supports.");
   }
 }
 
