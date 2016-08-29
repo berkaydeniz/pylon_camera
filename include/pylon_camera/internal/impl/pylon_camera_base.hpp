@@ -285,10 +285,6 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
             encoding = "Mono8";
             break;
 
-          case PixelEncodingEnum::BGR8:
-            encoding = "BGR8";
-            break;
-
           case PixelEncodingEnum::RGB8:
             encoding = "RGB8";
             break;
@@ -842,33 +838,19 @@ std::string PylonCameraImpl<CameraTraitT>::imageEncoding() const
     case PixelEncodingEnum::RGB8:
       return sensor_msgs::image_encodings::RGB8;
 
-    case PixelEncodingEnum::BGR8:
-      return sensor_msgs::image_encodings::BGR8;
-
     case PixelEncodingEnum::MONO8:
       return sensor_msgs::image_encodings::MONO8;
 
     default:
-      throw std::runtime_error("Unsupported image encoding. Convert to one of RGB8, BGR8, MONO8 that camera supports.");
+      throw std::runtime_error("Unsupported image encoding. Convert to RGB8 MONO8 that camera supports.");
   }
 }
 
 template <typename CameraTraitT>
 int PylonCameraImpl<CameraTraitT>::imagePixelDepth() const
 {
-  //KTODO: Consider implementing check
-  // Currently supports bpp8 (Mono8) or bpp24 (RGB8)
+  // Currently supports bpp8 (Mono8) or bpp24 (RGB8) which has size of uint8_t
   return sizeof(uint8_t);
-//  switch ( image_pixel_depth_ )
-//  {
-//    case PixelSizeEnum::bpp16:
-//    case PixelSizeEnum::bpp8:
-//    case PixelSizeEnum::bpp24:
-//      return sizeof(uint8_t);
-//
-//    default:
-//      throw std::runtime_error("Unsupported pixel size.");
-//  }
 }
 
 template <typename CameraTraitT>

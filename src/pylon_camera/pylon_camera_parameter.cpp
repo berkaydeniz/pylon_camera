@@ -37,7 +37,7 @@ PylonCameraParameter::PylonCameraParameter() :
         device_user_id_(""),
         frame_rate_(5.0),
         camera_info_url_(""),
-        pixel_encoding_(2),
+        pixel_encoding_(1),
         binning_x_(1),
         binning_y_(1),
         binning_x_given_(false),
@@ -82,9 +82,9 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
         nh.getParam("camera_info_url", camera_info_url_);
     }
 
-    nh.param("pixel_encoding", pixel_encoding_, 2);
-    if (pixel_encoding_ < 0 || pixel_encoding_ > 2)
-      pixel_encoding_ = 2;
+    nh.param("pixel_encoding", pixel_encoding_, 1);
+    if (pixel_encoding_ < 0 || pixel_encoding_ > 1)
+      pixel_encoding_ = 1;
 
     binning_x_given_ = nh.hasParam("binning_x");
     if ( binning_x_given_ )

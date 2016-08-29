@@ -53,7 +53,6 @@ namespace pylon_camera
 
 // Pixel Format Encoding enumeration
 enum PixelEncodingEnum {MONO8,
-                        BGR8,
                         RGB8,
                         no_pixelEncoding,
                         };
@@ -186,7 +185,6 @@ protected:
     CBaslerInstantCameraT* cam_;
 
     PixelEncodingEnum image_encoding_;
-
     PixelSizeEnum image_pixel_depth_;
 
     GenApi::CEnumerationPtr pixelEncoding_;

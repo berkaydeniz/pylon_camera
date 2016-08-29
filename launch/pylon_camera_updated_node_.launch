@@ -8,7 +8,7 @@
     <arg name="binning_x"             default="1" />
     <arg name="binning_y"             default="1" />
     <arg name="frame_rate"            default="20.0" />
-    <arg name="pixel_encoding"        default="2" /> <!-- 0:MONO8, 1:BGR8, 2:RGB8 -->
+    <arg name="pixel_encoding"        default="1" /> <!-- 0:MONO8, 1:RGB8 -->
     <arg name="exposure"              default="15000.0" />
     <arg name="gain"                  default="0.0" />
     <arg name="gamma"                 default="1.0" />
