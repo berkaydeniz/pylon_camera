@@ -427,6 +427,9 @@ bool PylonCameraNode::grabImage()
 
     if ( camera_info_manager_->isCalibrated() )
     {
+        if (cv_bridge_img_rect_ == nullptr) {
+            setupRectification();
+        }
         cv_bridge_img_rect_->header.stamp = img_raw_msg_.header.stamp;
         assert(pinhole_model_->initialized());
         cv::Mat img_raw = cv::Mat(img_raw_msg_.height, img_raw_msg_.width,
