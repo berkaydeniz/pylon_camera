@@ -264,13 +264,7 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
             setShutterMode(parameters.shutter_mode_);
         }
 
-        if ( image_encoding_ != PixelFormatEnums::PixelFormat_Mono8 )
-        {
-            cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_Mono8);
-            image_encoding_ = cam_->PixelFormat.GetValue();
-            ROS_WARN_STREAM("Image encoding differing from 8-Bit Mono not yet "
-                << "implemented! Will switch to 8-Bit Mono");
-        }
+        setImageEncoding(parameters);
 
         cam_->StartGrabbing();
         user_output_selector_enums_ = detectAndCountNumUserOutputs();
@@ -807,26 +801,15 @@ bool PylonCameraImpl<CameraTraitT>::setShutterMode(const SHUTTER_MODE &shutter_m
 }
 
 template <typename CameraTraitT>
-std::string PylonCameraImpl<CameraTraitT>::imageEncoding() const
-{
-    switch ( image_encoding_ )
-    {
-        case PixelFormatEnums::PixelFormat_Mono8:
-            return sensor_msgs::image_encodings::MONO8;
-        default:
-            throw std::runtime_error("Currently, only mono8 cameras are supported");
-    }
-}
-
-template <typename CameraTraitT>
 int PylonCameraImpl<CameraTraitT>::imagePixelDepth() const
 {
-    switch ( image_pixel_depth_ )
+    if ( imageEncoding() == sensor_msgs::image_encodings::MONO8)
     {
-        case PixelSizeEnums::PixelSize_Bpp8:
-            return sizeof(uint8_t);
-        default:
-            throw std::runtime_error("Currently, only 8bit images are supported");
+        return (sizeof(uint8_t) * CHANNEL_MONO8);
+    }
+    else
+    {
+        return (sizeof(uint8_t) * CHANNEL_RGB8);
     }
 }
 
