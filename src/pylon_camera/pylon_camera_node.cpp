@@ -427,12 +427,14 @@ bool PylonCameraNode::grabImage()
 
     if ( camera_info_manager_->isCalibrated() )
     {
-        cv_bridge_img_rect_->header.stamp = img_raw_msg_.header.stamp;
-        assert(pinhole_model_->initialized());
-        cv::Mat img_raw = cv::Mat(img_raw_msg_.height, img_raw_msg_.width,
-                                  CV_8UC1, img_raw_msg_.data.data());
-        pinhole_model_->fromCameraInfo(camera_info_manager_->getCameraInfo());
-        pinhole_model_->rectifyImage(img_raw, cv_bridge_img_rect_->image);
+        if (getNumSubscribersRect() > 0) {
+            cv_bridge_img_rect_->header.stamp = img_raw_msg_.header.stamp;
+            assert(pinhole_model_->initialized());
+            cv::Mat img_raw = cv::Mat(img_raw_msg_.height, img_raw_msg_.width,
+                                      CV_8UC1, img_raw_msg_.data.data());
+            pinhole_model_->fromCameraInfo(camera_info_manager_->getCameraInfo());
+            pinhole_model_->rectifyImage(img_raw, cv_bridge_img_rect_->image);
+        }
     }
     return true;
 }
