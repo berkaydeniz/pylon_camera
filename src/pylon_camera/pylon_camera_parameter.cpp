@@ -59,7 +59,13 @@ PylonCameraParameter::PylonCameraParameter() :
         // #########################
         mtu_size_(3000),
         inter_pkg_delay_(1000),
-        shutter_mode_(SM_DEFAULT)
+        shutter_mode_(SM_DEFAULT),
+        // #########################
+        light_source_preset_(0),
+        balance_white_auto_(0),
+        balance_ratio_selector_(2),
+        balance_ratio_(2.56),
+        overlap_mode_on_(false)
 {}
 
 PylonCameraParameter::~PylonCameraParameter()
@@ -210,6 +216,33 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
     else
     {
         shutter_mode_ = SM_DEFAULT;
+    }
+
+    // ##########################
+
+    if ( nh.hasParam("usb/light_source_preset") )
+    {
+        nh.getParam("usb/light_source_preset", light_source_preset_);
+    }
+
+    if ( nh.hasParam("usb/balance_white_auto") )
+    {
+        nh.getParam("usb/balance_white_auto", balance_white_auto_);
+    }
+
+    if ( nh.hasParam("usb/balance_ratio_selector") )
+    {
+        nh.getParam("usb/balance_ratio_selector", balance_ratio_selector_);
+    }
+
+    if ( nh.hasParam("usb/balance_ratio") )
+    {
+        nh.getParam("usb/balance_ratio", balance_ratio_);
+    }
+
+    if ( nh.hasParam("usb/overlap_mode_on") )
+    {
+        nh.getParam("usb/overlap_mode_on", overlap_mode_on_);
     }
 
     validateParameterSet(nh);

@@ -100,3 +100,46 @@ frame_rate: 5.0
 #  For cameras used on a RaspberryPI this value should be set to 11772.
 # gige:
 #  inter_pkg_delay: 1000
+
+############################################################################
+
+#  Color preset selection. Only used for USB rgb8 cameras.
+#  Based on the selection, camera automatically sets parameters
+#  to for image acquisition. Available options are 
+#  0: Off
+#  1: Daylight5000K
+#  2: Daylight6500K
+#  3: Tungsten2800K (tungsten incandescent light)
+#usb:
+# light_source_preset: 0
+
+#  Balance white auto. Only used for USB rgb8 cameras.
+#  When set for once, white balance is automatically adjusted until it
+#  reaches a specific target value. If continuous is selected, white balance
+#  will be repeatedly adjusted while images are acquired. 
+#  Available options are 
+#  0: Off
+#  1: Once
+#  2: Continuous
+#usb:
+# balance_white_auto: 0
+
+#  Balance ratio selector. Only used for USB rgb8 cameras.
+#  The parameter chooses which channels to apply balance ratio.
+#  Available options are
+#  0: Red
+#  1: Green
+#  2: Blue
+#usb:
+# balance_ratio_selector: 2
+
+#  Balance ratio. Only used for USB rgb8 cameras.
+#  The value will be used to balance selected channel
+#usb:
+# balance_ratio: 2.56
+
+#  Overlap exposure selection. Only used for USB rgb8 cameras.
+#  If value is true, camera performs overlapping exposure and 
+#  image readout.
+#usb:
+# overlap_mode_on: false
