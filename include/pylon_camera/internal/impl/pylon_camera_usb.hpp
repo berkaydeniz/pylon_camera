@@ -85,6 +85,75 @@ bool PylonUSBCamera::applyCamSpecificStartupSettings(const PylonCameraParameter&
         cam_->AutoGainLowerLimit.SetValue(cam_->Gain.GetMin());
         cam_->AutoGainUpperLimit.SetValue(cam_->Gain.GetMax());
 
+        // If using USB rgb8 camera, set following additional parameters.
+        if (parameters.imageEncoding() == "rgb8")
+        {
+            if (parameters.light_source_preset_ == Basler_UsbCameraParams::LightSourcePreset_Off)
+            {
+                cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Off);
+            }
+            else if (parameters.light_source_preset_ == Basler_UsbCameraParams::LightSourcePreset_Daylight5000K)
+            {
+                cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Daylight5000K);
+            }
+            else if (parameters.light_source_preset_ == Basler_UsbCameraParams::LightSourcePreset_Daylight6500K)
+            {
+                cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Daylight6500K);
+            } else if (parameters.light_source_preset_ == Basler_UsbCameraParams::LightSourcePreset_Tungsten2800K)
+            {
+                cam_->LightSourcePreset.SetValue(Basler_UsbCameraParams::LightSourcePreset_Tungsten2800K);
+            }
+            else
+            {
+                ROS_WARN("Light source preset has not valid value.");
+            }
+
+            if (parameters.balance_white_auto_ == Basler_UsbCameraParams::BalanceWhiteAuto_Off)
+            {
+                cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Off);
+            }
+            else if (parameters.balance_white_auto_ == Basler_UsbCameraParams::BalanceWhiteAuto_Once)
+            {
+                cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Once);
+            }
+            else if (parameters.balance_white_auto_ == Basler_UsbCameraParams::BalanceWhiteAuto_Continuous)
+            {
+                cam_->BalanceWhiteAuto.SetValue(Basler_UsbCameraParams::BalanceWhiteAuto_Continuous);
+            }
+            else
+            {
+                ROS_WARN("Balance white auto has not valid value.");
+            }
+
+            if (parameters.balance_ratio_selector_ == Basler_UsbCameraParams::BalanceRatioSelector_Red)
+            {
+                cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Red);
+            }
+            else if (parameters.balance_ratio_selector_ == Basler_UsbCameraParams::BalanceRatioSelector_Green)
+            {
+                cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Green);
+            }
+            else if (parameters.balance_ratio_selector_ == Basler_UsbCameraParams::BalanceRatioSelector_Blue)
+            {
+                cam_->BalanceRatioSelector.SetValue(Basler_UsbCameraParams::BalanceRatioSelector_Blue);
+            }
+            else
+            {
+                ROS_WARN("Balance ratio selector has not valid value.");
+            }
+
+            cam_->BalanceRatio.SetValue(parameters.balance_ratio_);
+
+            if (parameters.overlap_mode_on_)
+            {
+                cam_->OverlapMode.SetIntValue(Basler_UsbCameraParams::OverlapMode_On);
+            }
+            else
+            {
+                cam_->OverlapMode.SetIntValue(Basler_UsbCameraParams::OverlapMode_Off);
+            }
+        }
+
         // The gain auto function and the exposure auto function can be used at the same time. In this case,
         // however, you must also set the Auto Function Profile feature.
         //  cam_->AutoFunctionProfile.SetValue(Basler_UsbCameraParams::AutoFunctionProfile_MinimizeGain);
