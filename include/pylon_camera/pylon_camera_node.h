@@ -64,7 +64,7 @@ typedef actionlib::SimpleActionServer<camera_control_msgs::GrabImagesAction> Gra
 class PylonCameraNode
 {
 public:
-    PylonCameraNode();
+    PylonCameraNode(ros::NodeHandle &nh_private, ros::NodeHandle &nh_image);
     virtual ~PylonCameraNode();
 
     /**
@@ -74,9 +74,9 @@ public:
     void init();
 
     /**
-     * spin the node
+     * spin the node (Timer callback)
      */
-    virtual void spin();
+    virtual void spin(const ros::TimerEvent& event);
 
     /**
      * Getter for the frame rate set by the launch script or from the ros parameter
@@ -306,7 +306,13 @@ protected:
      */
     bool waitForCamera(const ros::Duration& timeout) const;
 
-    ros::NodeHandle nh_;
+    // Timer callback for pylon_camera_node::spin()
+    ros::Timer grab_image_timer_;
+
+    // Pointing to passed NodeHandles
+    ros::NodeHandle* nh_private_;
+    ros::NodeHandle* nh_image_;
+
     PylonCameraParameter pylon_camera_parameter_set_;
     ros::ServiceServer set_binning_srv_;
     ros::ServiceServer set_exposure_srv_;
