@@ -76,7 +76,7 @@ public:
     /**
      * spin the node (Timer callback)
      */
-    virtual void spin(const ros::TimerEvent& event);
+    virtual void timerCallback(const ros::TimerEvent& event);
 
     /**
      * Getter for the frame rate set by the launch script or from the ros parameter

@@ -76,8 +76,7 @@ PylonCameraNode::PylonCameraNode(ros::NodeHandle &nh_private, ros::NodeHandle &n
       pinhole_model_(nullptr),
       cv_bridge_img_rect_(nullptr),
       camera_info_manager_(new camera_info_manager::CameraInfoManager(nh_private)),
-      is_sleeping_(false),
-      grab_image_timer_(nh_image.createTimer(ros::Duration(frameRate()), &PylonCameraNode::spin, this))
+      is_sleeping_(false)
 {
     // Pointing passed Node Handles
     nh_private_ = &nh_private;
@@ -110,6 +109,9 @@ void PylonCameraNode::init()
         ros::shutdown();
         return;
     }
+
+    // Setup Timer
+    grab_image_timer_ = nh_image_->createTimer(ros::Duration(1/frameRate()), &PylonCameraNode::timerCallback, this);
 }
 
 bool PylonCameraNode::initAndRegister()
@@ -368,7 +370,7 @@ void PylonCameraNode::setupRectification()
 
 
 
-void PylonCameraNode::spin(const ros::TimerEvent& event)
+void PylonCameraNode::timerCallback(const ros::TimerEvent& event)
 {
     if ( camera_info_manager_->isCalibrated() )
     {

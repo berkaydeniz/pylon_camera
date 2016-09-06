@@ -5,6 +5,7 @@ add_definitions("-std=gnu++11")
 #set(CMAKE_CXX_FLAGS "-g -Wall -Wno-unknown-pragmas -Wno-delete-non-virtual-dtor -Wno-unused-variable")
 set(
     CATKIN_COMPONENTS
+     nodelet
      actionlib
      camera_control_msgs
      camera_info_manager
@@ -51,6 +52,7 @@ roslint_cpp(
     src/${PROJECT_NAME}/pylon_camera_parameter.cpp
     src/${PROJECT_NAME}/pylon_camera.cpp
     src/${PROJECT_NAME}/write_device_user_id_to_camera.cpp
+    src/${PROJECT_NAME}/pylon_camera_nodelet.cpp
     include/${PROJECT_NAME}/binary_exposure_search.h
     include/${PROJECT_NAME}/pylon_camera_node.h
     include/${PROJECT_NAME}/pylon_camera_parameter.h
@@ -77,6 +79,7 @@ add_library(
      src/${PROJECT_NAME}/pylon_camera.cpp
      src/${PROJECT_NAME}/pylon_camera_node.cpp
      src/${PROJECT_NAME}/pylon_camera_parameter.cpp
+     src/${PROJECT_NAME}/pylon_camera_nodelet.cpp
 )
 
 target_link_libraries(
@@ -155,6 +158,13 @@ install(
      ${CATKIN_PACKAGE_LIB_DESTINATION}
     RUNTIME DESTINATION
      ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(
+    FILES
+      nodelet_plugins.xml
+    DESTINATION
+      ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
 install(
