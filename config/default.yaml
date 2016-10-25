@@ -14,7 +14,7 @@ camera_info_url: ""
 
 #  The image encoding format under which camera takes picture.
 #  The supported encoding are "mono8" and "rgb8"
-#image_encoding: mono8
+image_encoding: rgb8
 
 #  Binning factor to get downsampled images. It refers here to any camera
 #  setting which combines rectangular neighborhoods of pixels into larger
@@ -28,7 +28,7 @@ camera_info_url: ""
 #  The desired publisher frame rate if listening to the topics.
 #  This paramter can only be set once at startup
 #  Calling the GrabImages-Action can result in a higher framerate
-frame_rate: 5.0
+frame_rate: 20.0
 
 ##########################################################################
 ######################## Image Intensity Settings ########################
