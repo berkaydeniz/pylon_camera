@@ -153,6 +153,10 @@ bool PylonGigECamera::setImageEncoding(const PylonCameraParameter& parameters)
         {
             cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_RGB8Planar);
         }
+        else if (parameters.imageEncoding() == "bayer_rg8")
+	{
+	    cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_BayerRG8);
+	}
         else
         {
             cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_Mono8);
@@ -174,6 +178,9 @@ std::string PylonGigECamera::imageEncoding() const
     {
         case PixelFormatEnums::PixelFormat_Mono8:
             return sensor_msgs::image_encodings::MONO8;
+	    
+	case PixelFormatEnums::PixelFormat_BayerRG8:
+	    return sensor_msgs::image_encodings::BAYER_RGGB8;
 
         case PixelFormatEnums::PixelFormat_RGB8Planar:
             return sensor_msgs::image_encodings::RGB8;

@@ -803,7 +803,8 @@ bool PylonCameraImpl<CameraTraitT>::setShutterMode(const SHUTTER_MODE &shutter_m
 template <typename CameraTraitT>
 int PylonCameraImpl<CameraTraitT>::imagePixelDepth() const
 {
-    if ( imageEncoding() == sensor_msgs::image_encodings::MONO8)
+    if ( imageEncoding() == sensor_msgs::image_encodings::MONO8 ||
+         imageEncoding() == sensor_msgs::image_encodings::BAYER_RGGB8)
     {
         return (sizeof(uint8_t) * CHANNEL_MONO8);
     }
