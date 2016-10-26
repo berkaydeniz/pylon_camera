@@ -37,7 +37,7 @@ PylonCameraParameter::PylonCameraParameter() :
         device_user_id_(""),
         frame_rate_(5.0),
         camera_info_url_(""),
-        image_encoding_("mono8"),
+        image_encoding_("bayer_rg8"),
         binning_x_(1),
         binning_y_(1),
         binning_x_given_(false),

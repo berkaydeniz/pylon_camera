@@ -244,28 +244,28 @@ public:
     bool has_intrinsic_calib_;
 
     /**
-     * Light source preset. Only used for USB rgb8 cameras.
+     * Light source preset. Only used for USB rgb8/bayer_rg8 cameras.
      * Based on environment, camera sets pre-configured settings.
      */
     int light_source_preset_;
 
     /**
-     * Balance white auto. Only used for USB rgb8 cameras.
+     * Balance white auto. Only used for USB rgb8/bayer_rg8 cameras.
      */
     int balance_white_auto_;
 
     /**
-     * Balance ratio selector. Only used for USB rgb8 cameras.
+     * Balance ratio selector. Only used for USB rgb8/bayer_rg8 cameras.
      */
     int balance_ratio_selector_;
 
     /**
-     * Balance ratio. Only used for USB rgb8 cameras.
+     * Balance ratio. Only used for USB rgb8/bayer_rg8 cameras.
      */
     double balance_ratio_;
 
     /**
-     * Overlap mode on. Only used for USB rgb8 cameras
+     * Overlap mode on. Only used for USB rgb8/bayer_rg8 cameras
      */
     bool overlap_mode_on_;
 

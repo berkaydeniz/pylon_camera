@@ -86,7 +86,8 @@ bool PylonUSBCamera::applyCamSpecificStartupSettings(const PylonCameraParameter&
         cam_->AutoGainUpperLimit.SetValue(cam_->Gain.GetMax());
 
         // If using USB rgb8 camera, set following additional parameters.
-        if (parameters.imageEncoding() == "rgb8")
+        if (parameters.imageEncoding() == "rgb8" ||
+	    parameters.imageEncoding() == "bayer_rg8" )
         {
             if (parameters.light_source_preset_ == Basler_UsbCameraParams::LightSourcePreset_Off)
             {
@@ -203,6 +204,10 @@ bool PylonUSBCamera::setImageEncoding(const PylonCameraParameter& parameters)
         {
             cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_RGB8);
         }
+	else if (parameters.imageEncoding() == "bayer_rg8")
+	{
+	    cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_BayerRG8);
+	}
         else
         {
             cam_->PixelFormat.SetValue(PixelFormatEnums::PixelFormat_Mono8);
@@ -224,6 +229,9 @@ std::string PylonUSBCamera::imageEncoding() const
     {
         case PixelFormatEnums::PixelFormat_Mono8:
             return sensor_msgs::image_encodings::MONO8;
+	    
+	case PixelFormatEnums::PixelFormat_BayerRG8:
+	    return sensor_msgs::image_encodings::BAYER_RGGB8;
 
         case PixelFormatEnums::PixelFormat_RGB8:
             return sensor_msgs::image_encodings::RGB8;
