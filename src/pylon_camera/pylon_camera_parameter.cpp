@@ -35,6 +35,7 @@ namespace pylon_camera
 PylonCameraParameter::PylonCameraParameter() :
         camera_frame_("pylon_camera"),
         device_user_id_(""),
+        device_serial_number_(""),
         frame_rate_(5.0),
         camera_info_url_(""),
         image_encoding_("bayer_rg8"),
@@ -78,6 +79,8 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
     nh.param<std::string>("camera_frame", camera_frame_, "pylon_camera");
 
     nh.param<std::string>("device_user_id", device_user_id_, "");
+
+    nh.param<std::string>("device_serial_number", device_serial_number_, "");
 
     if ( nh.hasParam("frame_rate") )
     {
@@ -305,6 +308,11 @@ void PylonCameraParameter::validateParameterSet(const ros::NodeHandle& nh)
 const std::string& PylonCameraParameter::deviceUserID() const
 {
     return device_user_id_;
+}
+
+const std::string& PylonCameraParameter::deviceSerialNumber() const
+{
+    return device_serial_number_;
 }
 
 std::string PylonCameraParameter::shutterModeString() const

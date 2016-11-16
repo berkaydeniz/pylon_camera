@@ -64,6 +64,13 @@ public:
     static PylonCamera* create(const std::string& device_user_id);
 
     /**
+     * Create a new PylonCamera instance based on the Device Serial Number of the camera.
+     * @param device_serial_number Pylon Device Serial Number.
+     * @return new PylonCamera instance or NULL if the camera was not found.
+     */
+    static PylonCamera* createWithSerial(const std::string& device_serial_number);
+
+    /**
      * Configures the camera according to the software trigger mode.
      * @return true if all the configuration could be set up.
      */
@@ -330,6 +337,12 @@ public:
     const std::string& deviceUserID() const;
 
     /**
+     * Getter for the device serial number of the used camera
+     * @return the device_serial_number
+     */
+    const std::string& deviceSerialNumber() const;
+
+    /**
      * Getter for the image height
      * @return number of rows in the image
      */
@@ -417,6 +430,11 @@ protected:
      * The DeviceUserID of the found camera
      */
     std::string device_user_id_;
+
+    /**
+     * The Device Serial Number of the found camera
+     */
+    std::string device_serial_number_;
 
     /**
      * Number of image rows.

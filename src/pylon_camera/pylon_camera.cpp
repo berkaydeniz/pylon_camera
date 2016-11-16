@@ -199,9 +199,88 @@ PylonCamera* PylonCamera::create(const std::string& device_user_id_to_open)
     }
 }
 
+PylonCamera* PylonCamera::createWithSerial(const std::string& device_serial_number)
+{
+    try
+    {
+        // Before using any pylon methods, the pylon runtime must be initialized.
+        Pylon::PylonInitialize();
+
+        Pylon::CTlFactory& tl_factory = Pylon::CTlFactory::GetInstance();
+        Pylon::DeviceInfoList_t device_list;
+
+        // EnumerateDevices() returns the number of devices found
+        if ( 0 == tl_factory.EnumerateDevices(device_list) )
+        {
+            Pylon::PylonTerminate();
+            ROS_ERROR_ONCE("No camera present");
+            return nullptr;
+        }
+        else
+        {
+            Pylon::DeviceInfoList_t::const_iterator it;
+            if ( device_serial_number.empty() )
+            {
+                ROS_INFO_STREAM("Found camera with Device Serial Number "
+                            << device_list.front().GetSerialNumber() << ": "
+                            << device_list.front().GetModelName());
+                PYLON_CAM_TYPE cam_type = detectPylonCamType(device_list.front());
+                return createFromDevice(cam_type,
+                                        tl_factory.CreateDevice(device_list.front()));
+            }
+            bool found_desired_device = false;
+            for ( it = device_list.begin(); it != device_list.end(); ++it )
+            {
+                std::string device_serial_number_found(it->GetSerialNumber());
+                if ( (0 == device_serial_number.compare(device_serial_number_found)) ||
+                     (device_serial_number.length() < device_serial_number_found.length() &&
+                     (0 == device_serial_number_found.compare(device_serial_number_found.length() -
+                                                         device_serial_number.length(),
+                                                         device_serial_number.length(),
+                                                         device_serial_number) )
+                     )
+                   )
+                {
+                    found_desired_device = true;
+                    break;
+                }
+            }
+            if ( found_desired_device )
+            {
+                ROS_INFO_STREAM("Found the desired camera with Device Serial Number "
+                            << device_serial_number << ": "
+                            << it->GetModelName());
+                PYLON_CAM_TYPE cam_type = detectPylonCamType(*it);
+                return createFromDevice(cam_type,
+                                        tl_factory.CreateDevice(*it));
+            }
+            else
+            {
+                ROS_ERROR_STREAM("Couldn't find the camera, that matches the "
+                    << "given Device Serial Number: " << device_serial_number << "!\r\n"
+                    << "Maybe it's wrong or has not yet been written to the "
+                    << "camera?!");
+                return nullptr;
+            }
+        }
+    }
+    catch ( GenICam::GenericException &e )
+    {
+        ROS_ERROR_STREAM("An exception while opening the desired camera with "
+            << "Device Serial Number: " << device_serial_number << " occurred: \r\n"
+            << e.GetDescription());
+        return nullptr;
+    }
+}
+
 const std::string& PylonCamera::deviceUserID() const
 {
     return device_user_id_;
+}
+
+const std::string& PylonCamera::deviceSerialNumber() const
+{
+    return device_serial_number_;
 }
 
 const size_t& PylonCamera::imageRows() const

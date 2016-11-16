@@ -69,6 +69,11 @@ public:
     const std::string& deviceUserID() const;
 
     /**
+     * Getter for the device_serial_number_ set from ros-parameter server
+     */
+    const std::string& deviceSerialNumber() const;
+
+    /**
      * Getter for the string describing the shutter mode
      */
     std::string shutterModeString() const;
@@ -305,6 +310,12 @@ protected:
      * Calling the GrabImages-Action can result in a higher framerate
      */
     double frame_rate_;
+
+    /**
+     * The Device Serial Number of the camera. If not empty, driver will use Device
+     * Serial Number instead of DeviceUserID to find device.
+     */
+    std::string device_serial_number_;
 
     /**
      * The CameraInfo URL (Uniform Resource Locator) where the optional
