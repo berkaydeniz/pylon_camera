@@ -5,6 +5,11 @@ camera_frame: pylon_camera
 #  device list will be used
 device_user_id: ""
 
+#  The Device Serial Number of the camera. If not empty, driver will use serial
+#  number to detect device.
+
+device_serial_number: ""
+
 #  The CameraInfo URL (Uniform Resource Locator) where the optional intrinsic
 #  camera calibration parameters are stored. This URL string will be parsed
 #  from the ROS-CameraInfoManager:

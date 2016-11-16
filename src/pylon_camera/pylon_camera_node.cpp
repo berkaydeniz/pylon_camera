@@ -116,8 +116,14 @@ void PylonCameraNode::init()
 
 bool PylonCameraNode::initAndRegister()
 {
-    pylon_camera_ = PylonCamera::create(
-                                    pylon_camera_parameter_set_.deviceUserID());
+    if (!pylon_camera_parameter_set_.deviceSerialNumber().empty())
+    {
+	pylon_camera_ = PylonCamera::createWithSerial(pylon_camera_parameter_set_.deviceSerialNumber());
+    }
+    else
+    {
+	pylon_camera_ = PylonCamera::create(pylon_camera_parameter_set_.deviceUserID());
+    }
 
     if ( pylon_camera_ == nullptr )
     {
@@ -126,8 +132,14 @@ bool PylonCameraNode::initAndRegister()
         ros::Rate r(0.5);
         while ( ros::ok() && pylon_camera_ == nullptr )
         {
-            pylon_camera_ = PylonCamera::create(
-                                    pylon_camera_parameter_set_.deviceUserID());
+	    if (!pylon_camera_parameter_set_.deviceSerialNumber().empty())
+	    {
+		pylon_camera_ = PylonCamera::createWithSerial(pylon_camera_parameter_set_.deviceSerialNumber());
+	    }
+	    else
+	    {
+		pylon_camera_ = PylonCamera::create(pylon_camera_parameter_set_.deviceUserID());
+	    }
             if ( ros::Time::now() > end )
             {
                 ROS_WARN_STREAM("No camera present. Keep waiting ...");
