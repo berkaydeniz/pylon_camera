@@ -269,6 +269,16 @@ public:
      */
     bool overlap_mode_on_;
 
+    /**
+     * The image height
+     */
+    int image_height_;
+
+    /**
+     * The image width
+     */
+    int image_width_;
+
 protected:
     /**
      * Validates the parameter set found on the ros parameter server.

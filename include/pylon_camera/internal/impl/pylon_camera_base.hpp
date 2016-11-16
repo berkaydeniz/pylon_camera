@@ -145,6 +145,21 @@ GenApi::IFloat& PylonCameraImpl<CameraTraitT>::gamma()
 }
 
 template <typename CameraTraitT>
+bool PylonCameraImpl<CameraTraitT>::setImageSize(const int& height, const int& width)
+{
+    if ( (height <= cam_->HeightMax.GetValue()) && (width <= cam_->WidthMax.GetValue()) )
+    {
+	cam_->Height.SetValue(height);
+	cam_->Width.SetValue(width);
+	return true;
+    }
+    else
+    {
+	return false;
+    }
+}
+
+template <typename CameraTraitT>
 float PylonCameraImpl<CameraTraitT>::currentGamma()
 {
     return static_cast<float>(gamma().GetValue());
@@ -265,6 +280,7 @@ bool PylonCameraImpl<CameraTraitT>::startGrabbing(const PylonCameraParameter& pa
         }
 
         setImageEncoding(parameters);
+	setImageSize(parameters.image_height_, parameters.image_width_);
 
         cam_->StartGrabbing();
         user_output_selector_enums_ = detectAndCountNumUserOutputs();

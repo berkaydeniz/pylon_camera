@@ -42,6 +42,8 @@ PylonCameraParameter::PylonCameraParameter() :
         binning_y_(1),
         binning_x_given_(false),
         binning_y_given_(false),
+        image_height_(1200),
+        image_width_(1600),
         // ##########################
         //  image intensity settings
         // ##########################
@@ -89,6 +91,10 @@ void PylonCameraParameter::readFromRosParameterServer(const ros::NodeHandle& nh)
     }
 
     nh.param<std::string>("image_encoding", image_encoding_, "mono8");
+
+    nh.param("image_height", image_height_, 1200);
+
+    nh.param("image_width", image_width_, 1600);
 
     binning_x_given_ = nh.hasParam("binning_x");
     if ( binning_x_given_ )
