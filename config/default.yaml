@@ -30,6 +30,12 @@ image_encoding: bayer_rg8
 #  Calling the GrabImages-Action can result in a higher framerate
 frame_rate: 20.0
 
+#  The desired height of image. If not set, defaults to 1200
+image_height: 480
+
+#  The desired width of image. If not set, defaults to 1600
+image_width: 640
+
 ##########################################################################
 ######################## Image Intensity Settings ########################
 ##########################################################################

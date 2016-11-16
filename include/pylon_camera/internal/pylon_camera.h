@@ -87,6 +87,8 @@ public:
                                const bool& exposure_auto,
                                const bool& gain_auto);
 
+    virtual bool setImageSize(const int& height, const int& width);
+
     virtual std::vector<int> detectAndCountNumUserOutputs();
 
     virtual bool setUserOutput(const int& output_id, const bool& value);

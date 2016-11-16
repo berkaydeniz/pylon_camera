@@ -191,6 +191,13 @@ public:
      */
     virtual bool setBinningY(const size_t& target_binning_y,
                              size_t& reached_binning_y) = 0;
+    /**
+     * Set the target image size
+     * @param height the height of image in pixel
+     * @param width the width of image in pixel
+     * @return false if image size exceeds limit or true otherwise.
+     */
+    virtual bool setImageSize(const int& height, const int& width) = 0;
 
     /**
      * Sets the exposure time in microseconds
